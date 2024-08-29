@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "472535154440",
-    "project_id": "firstassess-3d7a1",
-    "storage_bucket": "firstassess-3d7a1.appspot.com"
+    "project_number": "442798887176",
+    "project_id": "first-5b5a4",
+    "storage_bucket": "first-5b5a4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:472535154440:android:4e444c2be76f0bd27636bd",
+        "mobilesdk_app_id": "1:442798887176:android:34330938dc54db96df9cbd",
         "android_client_info": {
           "package_name": "com.firstassess"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBYx6aqK1XGIIsrNbnk_0PkzTa7QL_-TJc"
+          "current_key": "AIzaSyBBywqR8eBT8ur6bNJuM3GjGc9z_D3lmAs"
         }
       ],
       "services": {

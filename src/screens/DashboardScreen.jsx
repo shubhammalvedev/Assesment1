@@ -12,6 +12,8 @@ export default function DashboardScreen() {
     async function fetchSignupData() {
       try {
         const data = await getUsersMonthlySignupCounts();
+        console.log('data:::::::::::', data);
+        
         setSignupData(data);
         setLoading(false);
       } catch (error) {
@@ -60,9 +62,9 @@ export default function DashboardScreen() {
               chartConfig={{
                 backgroundColor: '#ffffff',
                 backgroundGradientFrom: '#ffffff',
-                backgroundGradientTo: '#ffffff',
+                backgroundGradientTo: '#919191',
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(250, 56, 2,  ${opacity})`, // Darker orange color for bars
+                color: (opacity = 1) => `rgba(245, 92, 32,  ${opacity})`, // Darker orange color for bars
                 style: {
                   borderRadius: 16
                 },

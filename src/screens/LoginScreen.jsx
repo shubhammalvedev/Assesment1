@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, ImageBackground, TouchableOpacity, Modal, Alert } from 'react-native';
+import { View, TextInput, Text, StyleSheet, ImageBackground, TouchableOpacity, Modal } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { fetchData, insertMultiUsers } from '../db/database';
 
@@ -11,32 +11,42 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     try {
       if (!email || !password) {
-        return
+        setError('Please fill in both fields.');
+        return;
       }
+
+      // Firebase email/password sign-in
       await auth().signInWithEmailAndPassword(email, password);
+
+      // Fetch users from local database and insert them if needed
       fetchData('users')
         .then(async (fetchedUsers) => {
-          insertMultiUsers(fetchedUsers, () => {
-            console.log('All users inserted!');
-          }, (error) => {
-            console.error('Error inserting users:', error.message);
-          });
+          insertMultiUsers(
+            fetchedUsers,
+            () => console.log('All users inserted!'),
+            (error) => console.error('Error inserting users:', error.message)
+          );
         })
         .catch((error) => {
-          console.log('Error:', error);
-          setLoading(false); // Set loading to false on error
+          console.log('Error fetching users:', error);
         });
     } catch (error) {
-      console.log(error);
-      setError('Invalid credentials. Please try again.');
+      // Handle Firebase Authentication errors
+      console.error('Login error:', error);
+      if (error.code === 'auth/user-not-found') {
+        setError('User not found. Please sign up.');
+      } else if (error.code === 'auth/wrong-password') {
+        setError('Incorrect password. Please try again.');
+      } else if (error.code === 'auth/invalid-email') {
+        setError('Invalid email format. Please check your email.');
+      } else {
+        setError('Login failed. Please try again later.');
+      }
     }
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/AppBG.jpg')}
-      style={styles.background}
-    >
+    <ImageBackground source={require('../assets/AppBG.jpg')} style={styles.background}>
       <View style={styles.overlay} />
       <View style={styles.container}>
         <Text style={styles.title}>Welcome Back!</Text>
@@ -46,6 +56,8 @@ export default function LoginScreen({ navigation }) {
           placeholderTextColor="#ccc"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
         <TextInput
           style={styles.input}
@@ -63,7 +75,7 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Modal to display error */}
+      {/* Error Modal */}
       <Modal
         animationType="slide"
         transparent={true}

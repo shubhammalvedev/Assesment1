@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import firebase from '@react-native-firebase/app';
+import firebase, { ReactNativeFirebase } from '@react-native-firebase/app';
 import HomeScreen from './src/screens/HomeScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import ContactFormScreen from './src/screens/ContactFormScreen';
@@ -18,19 +18,40 @@ import { createTable } from './src/db/database';
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBLLV5nvJQGF75PujWFkZqNeulAeWPpS50",
-  authDomain: "firstassess-3d7a1.firebaseapp.com",
-  databaseURL: "https://firstassess-3d7a1.firebaseio.com",
-  projectId: "firstassess-3d7a1",
-  storageBucket: "firstassess-3d7a1.appspot.com",
-  messagingSenderId: "472535154440",
-  appId: "1:472535154440:web:c85c3d1862cd7e5e7636bd",
-  measurementId: "G-3QF6TNCZPW"
+  apiKey: "AIzaSyBBywqR8eBT8ur6bNJuM3GjGc9z_D3lmAs",         // From api_key[0].current_key
+  authDomain: "first-5b5a4.firebaseapp.com",                 // Typically constructed as "project_id.firebaseapp.com"
+  projectId: "first-5b5a4",                                  // From project_info.project_id
+  storageBucket: "first-5b5a4.appspot.com",                  // From project_info.storage_bucket
+  messagingSenderId: "442798887176",                         // From project_info.project_number
+  appId: "1:442798887176:android:34330938dc54db96df9cbd"     // From client[0].client_info.mobilesdk_app_id
 };
 
+
+const initializeFirebase = (firebaseConfig: ReactNativeFirebase.FirebaseAppOptions, callback: () => void) => {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    // Execute callback after initialization
+    if (typeof callback === 'function') {
+      callback();
+    }
+  } else {
+    // Firebase is already initialized
+    if (typeof callback === 'function') {
+      callback();
+    }
+  }
+};
+
+// console.log('firebase.apps.length',firebase.apps);
+
 if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+  initializeFirebase(firebaseConfig, () => {
+    console.log('Firebase initialized!');
+    // Your post-initialization logic here
+  });
+  
 }
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

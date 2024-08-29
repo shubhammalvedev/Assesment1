@@ -30,6 +30,7 @@ export const createTable = () => {
 };
 
 export const insertUser = async (email, contact, uid, successCallback, errorCallback) => {
+  
   const signupDate = new Date().toISOString(); // Capture current date as signup date
   try {
     await db.transaction(async (tx) => {
@@ -79,8 +80,9 @@ export const insertUser = async (email, contact, uid, successCallback, errorCall
 export const insertMultiUsers = async (users, successCallback, errorCallback) => {
   for (const user of users) {
     const { email, contact, uid } = user; // Destructure user object
-
+    
     try {
+      console.log('insert usersssssss', users);
       await insertUser(email, contact, uid, successCallback, errorCallback);
     } catch (error) {
       errorCallback(new Error('Error inserting user: ' + error.message));
@@ -127,6 +129,8 @@ export const getUsersMonthlySignupCounts = () => {
 export const getUsers = callback => {
   db.transaction(tx => {
     tx.executeSql('SELECT * FROM Users;', [], (tx, results) => {
+      console.log('resultsresultsresultsresultsresultsresults',results.rows.item(0));
+      
       const rows = results.rows;
       let users = [];
       for (let i = 0; i < rows.length; i++) {
@@ -156,24 +160,24 @@ export const updateUserContact = (email, newContact, onSuccess, onError) => {
   });
 };
 
-export const fetchData = (collectionName) => {
-  return new Promise((resolve, reject) => {
-    try {
-      var fetchedUsers = [];
-      const unsubscribe = firestore() // Get a reference to Firestore
-        .collection('users') // Specify the "users" collection
-        .onSnapshot((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const { uid, name, email, contact } = doc.data(); // Extract user data
-            fetchedUsers.push({ uid, name, email, contact }); // Add user data with ID
-          });
-          resolve(fetchedUsers); // Resolve the Promise with fetched users
-        });
-    } catch (error) {
-      reject(error); // Reject the Promise on error
-    }
-  });
+export const fetchData = async (collectionName) => {
+  try {
+    const querySnapshot = await firestore().collection(collectionName).get();
+    const fetchedUsers = [];
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      const { uid, name, email, contact } = data;
+      fetchedUsers.push({ uid, name, email, contact });
+    });
+
+    return fetchedUsers;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
 };
+
 
 export const updateUserInSql = async (userId, name, contact) => {
   try {

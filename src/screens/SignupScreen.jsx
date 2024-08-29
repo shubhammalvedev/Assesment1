@@ -19,40 +19,42 @@ export default function SignupScreen({ navigation }) {
       setErrorMessage('All fields are required');
       return;
     }
-
-    setIsLoading(true); 
+  
+    setIsLoading(true);
     try {
       const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
       const db = firestore();
-
-      // Use userCredential.user.uid for the document ID
-      const userRef = db.collection('users').doc(userCredential.user.uid);
-
+  
+      // Store user data in Firestore
+      const userRef = db.collection('users').doc(user.uid);
       await userRef.set({
         contact,
         email,
-        uid: userCredential.user.uid, // Add the UID to the user data
+        uid: user.uid,
       });
-
-      fetchData('users')
-        .then(async (fetchedUsers) => {
-          insertMultiUsers(fetchedUsers, () => {
-            setIsLoading(false); // Set loading indicator to false after successful signup
-            setSuccessMessage('User added successfully');
-            setErrorMessage('');
-          }, (error) => {
-            console.error('Error inserting users:', error.message);
-          });
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+  
+      // Fetch user data from Firestore
+      const fetchedUsers = await fetchData('users');
+  
+      // Insert users into your local database or perform other actions
+      await new Promise((resolve, reject) => {
+        insertMultiUsers(fetchedUsers, resolve, reject);
+      });
+  
+      // After all operations are complete
+      setIsLoading(false);
+      setSuccessMessage('User added successfully');
+      setErrorMessage('');
+  
+      // Navigate to AppTabs
+      navigation.navigate('AppTabs');
     } catch (error) {
-      setIsLoading(false); // Set loading indicator to false after error
+      console.error('Error during signup:', error);
+      setIsLoading(false);
       setErrorMessage(error.message);
     }
   }, [email, password, contact, navigation]);
-
   useEffect(() => {
     // Clear error message on screen navigation (optional)
     return () => setErrorMessage('');

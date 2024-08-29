@@ -12,9 +12,13 @@ export default function ProfileScreen({ navigation }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
     const currentUser = auth().currentUser;
+    
     if (currentUser) {
       getUsers(users => {
-        const userData = users.find(u => u.Email.toLocaleLowerCase() === currentUser.email.toLocaleLowerCase());
+        const userData = users.find(u => 
+          u.Email.toLocaleLowerCase() === currentUser.email.toLocaleLowerCase()
+        );
+        
         if (userData) {
           setUser(userData);
           setContact(userData.Contact);
