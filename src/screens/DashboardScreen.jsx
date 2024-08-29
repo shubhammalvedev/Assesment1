@@ -73,7 +73,7 @@ export default function DashboardScreen() {
                   strokeWidth: 1,
                   stroke: "#e3e3e3" // Color for the grid lines
                 },
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Color for the labels (black)
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,// Color for the labels (black)
               }}
               style={styles.chart}
               showBarTops={false}
