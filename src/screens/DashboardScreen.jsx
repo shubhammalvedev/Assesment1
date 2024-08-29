@@ -64,7 +64,7 @@ export default function DashboardScreen() {
                 backgroundGradientFrom: '#ffffff',
                 backgroundGradientTo: '#919191',
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(245, 92, 32,  ${opacity})`, // Darker orange color for bars
+                color: (opacity = 1) => `rgba(245, 92, 32,  ${opacity})`,   // Darker orange color for bars
                 style: {
                   borderRadius: 16
                 },
